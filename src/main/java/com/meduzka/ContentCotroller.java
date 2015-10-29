@@ -43,7 +43,6 @@ public class ContentCotroller {
 //                        .cookie("auth", "token")
 //                        .timeout(3000)
                     .get();
-            logger.info("doc:{}", doc);
             response.getContent().add(doc.outerHtml());
         } catch (MalformedURLException m){
             response.getContent().add("Bad URL");
