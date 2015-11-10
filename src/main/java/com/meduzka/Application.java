@@ -1,11 +1,13 @@
 package com.meduzka;
 
-
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,14 +21,34 @@ import java.util.ArrayList;
  * @author Dmitri Lukoyanov
  * @created 27 Oct 2015
  */
+@SpringBootApplication
+public class Application extends SpringBootServletInitializer {
+    public static void main(String[] args){
+        SpringApplication.run(Application.class, args);
+    }
+
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(applicationClass);
+    }
+
+    private static Class<Application> applicationClass = Application.class;
+
+
+}
+
+/**
+ * @author Dmitri Lukoyanov
+ * @created 27 Oct 2015
+ */
 @RestController
-public class ContentCotroller {
+class ContentCotroller {
 
     private final static Logger logger = LoggerFactory.getLogger(ContentCotroller.class);
 
 
 
-    @RequestMapping("/parse")
+    @RequestMapping("/")
     public Content parse(@RequestParam(value = "url", defaultValue = "http://ya.ru") String urlStr){
 
         Content response = new Content();
@@ -43,7 +65,6 @@ public class ContentCotroller {
 //                        .cookie("auth", "token")
 //                        .timeout(3000)
                     .get();
-            logger.info("doc:{}", doc);
             response.getContent().add(doc.outerHtml());
         } catch (MalformedURLException m){
             response.getContent().add("Bad URL");
